@@ -1,7 +1,3 @@
-import OpenAI from 'openai'
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-
 const resumeContext = `
 Aman Rawat is an AI Engineer specializing in GenAI, Computer Vision, and ML systems.
 
@@ -20,6 +16,8 @@ Projects:
 Skills: GenAI/NLP (LLMs, LangChain, RAG, ChromaDB, BERT, HuggingFace), ML (PyTorch, TensorFlow, XGBoost, K-Means), CV (YOLOv8, ResNet, OpenCV, Jetson, TensorRT, DeepStream, CUDA), Software (Python, C++, Flask, FastAPI, Git).
 `
 
+import OpenAI from 'openai'
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
@@ -35,13 +33,16 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing or invalid question' })
   }
 
-  if (!process.env.OPENAI_API_KEY) {
-    return res.status(200).json({
-      answer: 'OPENAI_API_KEY is not set. Add it in Vercel Environment Variables to enable resume Q&A.',
-    })
-  }
-
   try {
+    const apiKey = process.env.OPENAI_API_KEY
+    if (!apiKey) {
+      return res.status(200).json({
+        answer:
+          'OPENAI_API_KEY is not set. Add it in Vercel Environment Variables to enable resume Q&A. For now this route is disabled, but other free modes still work.',
+      })
+    }
+
+    const openai = new OpenAI({ apiKey })
     const response = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [

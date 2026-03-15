@@ -3,12 +3,12 @@
 High-end interactive portfolio showcasing **GenAI**, **Computer Vision**, and **ML systems** with:
 
 - 🤖 **3D AI Avatar** (ReadyPlayerMe `.glb`) — talking assistant
-- 🧠 **LLM Q&A** — RAG over your resume (OpenAI)
+- 🧠 **LLM Q&A** — Resume RAG, general OpenAI, and Hugging Face sarcastic mode
 - 🧩 **3D ML visualizations** — rotating neural net / torus knot
 - 🎥 **Live CV demo** — camera feed (TensorFlow.js-ready)
 - ⚙️ **Jetson pipeline** — edge vision flow
 - 📦 **GitHub project loader** — auto-fetch from `amanrawat1777`
-- 🚀 **Vercel** — deploy frontend + serverless `/api/ask`
+- 🚀 **Vercel** — deploy frontend + serverless `/api/ask`, `/api/ask-openai`, `/api/ask-sarcastic`
 
 ---
 
@@ -24,12 +24,14 @@ npm run install:all
 
 **Backend (local server or Vercel):**
 
-- `OPENAI_API_KEY` — required for “Ask my AI” resume Q&A.
+- `OPENAI_API_KEY` — for **Resume** and **General AI** modes.
+- `HUGGINGFACE_TOKEN` or `HF_TOKEN` — for **Sarcastic** mode (Hugging Face model). Get a free token at [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens).
 
 Create `server/.env` for local:
 
 ```env
 OPENAI_API_KEY=sk-...
+HUGGINGFACE_TOKEN=hf_...
 ```
 
 ### 3. Run locally
@@ -60,11 +62,11 @@ Place `avatar.glb` in `client/public/`. Get a free avatar from [ReadyPlayerMe](h
 
 1. Push the repo to GitHub.
 2. In [Vercel](https://vercel.com), import the project.
-3. **Environment variables:** set `OPENAI_API_KEY` in the project settings.
+3. **Environment variables:** set `OPENAI_API_KEY` and optionally `HUGGINGFACE_TOKEN` (or `HF_TOKEN`) for the Sarcastic AI.
 4. **Build:** Vercel uses `vercel.json`:
-   - Build: `cd client && npm ci && npm run build`
+   - Build: `npm run build` (builds client)
    - Output: `client/dist`
-   - Serverless: `api/ask.js` handles `POST /api/ask` for resume Q&A.
+   - Serverless: `api/ask.js`, `api/ask-openai.js`, `api/ask-sarcastic.js` for the three chat modes.
 5. Deploy. The site will serve the SPA and `/api/ask` from the same origin.
 
 ---
@@ -85,7 +87,9 @@ ai-portfolio/
 │   ├── server.js
 │   └── rag.js
 ├── api/
-│   └── ask.js             # Vercel serverless RAG
+│   ├── ask.js             # Resume RAG
+│   ├── ask-openai.js      # General OpenAI Q&A
+│   └── ask-sarcastic.js   # Hugging Face sarcastic (gpt2)
 └── vercel.json
 ```
 
